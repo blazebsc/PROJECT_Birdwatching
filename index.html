@@ -160,9 +160,9 @@
 
   <div id="loading" class="screen">
     <noscript>Enable JavaScript</noscript>
+    <h1 class="loading-text">loading plz wait</h1>
     
-    
-    
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="loading-inner"></div></div>
   </div>
 
   <div id="error" class="screen" hidden>
@@ -203,7 +203,7 @@
       const scaffolding = new Scaffolding.Scaffolding();
       scaffolding.width = 480;
       scaffolding.height = 360;
-      scaffolding.resizeMode = "preserve-ratio";
+      scaffolding.resizeMode = "dynamic-resize";
       scaffolding.editableLists = false;
       scaffolding.usePackagedRuntime = true;
       scaffolding.setup();
