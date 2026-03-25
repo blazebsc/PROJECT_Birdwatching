@@ -1,0 +1,56 @@
+name: Extract and Deploy Zip Contents
+
+on:
+  push:
+    paths:
+      - 'PROJECT_Birdwatching.zip'
+  workflow_dispatch:
+
+jobs:
+  extract-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check if zip file exists
+        id: zip_check
+        run: |
+          if [ -f "PROJECT_Birdwatching.zip" ]; then
+            echo "zip_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "zip_exists=false" >> $GITHUB_OUTPUT
+            echo "Warning: PROJECT_Birdwatching.zip not found"
+          fi
+
+      - name: Delete old files and folders
+        if: steps.zip_check.outputs.zip_exists == 'true'
+        run: |
+          rm -f index.html
+          rm -f script.js
+          rm -rf assets
+
+      - name: Extract zip contents to root directory
+        if: steps.zip_check.outputs.zip_exists == 'true'
+        run: |
+          unzip -o PROJECT_Birdwatching.zip -d .
+
+      - name: Verify extracted files
+        if: steps.zip_check.outputs.zip_exists == 'true'
+        run: |
+          echo "Files in root directory:"
+          ls -la
+
+      - name: Commit and push changes
+        if: steps.zip_check.outputs.zip_exists == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          if ! git diff --quiet --cached; then
+            git commit -m "Extract PROJECT_Birdwatching.zip contents to root directory"
+            git push
+          else
+            echo "No changes to commit"
+          fi
