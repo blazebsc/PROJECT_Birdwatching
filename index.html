@@ -224,7 +224,7 @@
       scaffolding.setAccentColor("#ff4c4c");
 
       try {
-        scaffolding.addCloudProvider(new Scaffolding.Cloud.WebSocketProvider(["wss://clouddata.turbowarp.org","wss://clouddata.turbowarp.xyz"], "p4-@PROJECT_Birdwatching.sb3"));
+        scaffolding.addCloudProvider(new Scaffolding.Cloud.WebSocketProvider(["wss://clouddata.turbowarp.org","wss://clouddata.turbowarp.xyz"], "PROJECT_Birdwatching"));
       } catch (error) {
         console.error(error);
       }
@@ -235,14 +235,14 @@
       if (vm.renderer.setUseHighQualityRender) vm.renderer.setUseHighQualityRender(true);
       if (vm.setRuntimeOptions) vm.setRuntimeOptions({
         fencing: true,
-        miscLimits: true,
+        miscLimits: false,
         maxClones: 9999999999,
       });
       if (vm.setCompilerOptions) vm.setCompilerOptions({
         enabled: true,
-        warpTimer: false
+        warpTimer: true
       });
-      if (vm.renderer.setMaxTextureDimension) vm.renderer.setMaxTextureDimension(2048);
+      if (vm.renderer.setMaxTextureDimension) vm.renderer.setMaxTextureDimension(4096);
 
       // enforcePrivacy threat model only makes sense in the editor
       if (vm.runtime.setEnforcePrivacy) vm.runtime.setEnforcePrivacy(false);
