@@ -1,0 +1,54 @@
+name: Deploy Birdwatching Project Website
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find PROJECT_Birdwatching.zip
+        run: |
+          ZIP_PATH=$(find . -name "PROJECT_Birdwatching.zip" | head -n 1)
+
+          if [ -z "$ZIP_PATH" ]; then
+            echo "ERROR: PROJECT_Birdwatching.zip not found!"
+            exit 1
+          fi
+
+          echo "Found zip at: $ZIP_PATH"
+          echo "ZIP_PATH=$ZIP_PATH" >> $GITHUB_ENV
+
+      - name: Delete old files and assets folder
+        run: |
+          echo "Removing old files..."
+          rm -f index.html
+          rm -f script.js
+          rm -rf assets
+          echo "Cleanup complete."
+
+      - name: Extract zip into root directory
+        run: |
+          echo "Extracting $ZIP_PATH into root..."
+          unzip -o "$ZIP_PATH" -d .
+          echo "Extraction complete."
+
+      - name: Confirm extracted files in root
+        run: |
+          echo "Files now in root directory:"
+          ls -la
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "chore: deploy PROJECT_Birdwatching website"
+          git push
