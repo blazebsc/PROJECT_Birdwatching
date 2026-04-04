@@ -21,7 +21,7 @@ jobs:
             echo "zip_exists=true" >> $GITHUB_OUTPUT
           else
             echo "zip_exists=false" >> $GITHUB_OUTPUT
-            echo "Warning: PROJECT_Birdwatching.zip not found"
+            echo "ERROR: PROJECT_Birdwatching.zip not found — aborting."
           fi
 
       - name: Delete old files and folders
@@ -30,17 +30,17 @@ jobs:
           rm -f index.html
           rm -f script.js
           rm -rf assets
+          echo "Cleaned up old files."
 
-      - name: Extract zip contents to root directory
+      - name: Unzip PROJECT_Birdwatching.zip to root
         if: steps.zip_check.outputs.zip_exists == 'true'
         run: |
           unzip -o PROJECT_Birdwatching.zip -d .
+          echo "Extraction complete."
 
-      - name: Verify extracted files
+      - name: List extracted files
         if: steps.zip_check.outputs.zip_exists == 'true'
-        run: |
-          echo "Files in root directory:"
-          ls -la
+        run: ls -la
 
       - name: Commit and push changes
         if: steps.zip_check.outputs.zip_exists == 'true'
@@ -49,8 +49,8 @@ jobs:
           git config --local user.name "GitHub Action"
           git add -A
           if ! git diff --quiet --cached; then
-            git commit -m "Extract PROJECT_Birdwatching.zip contents to root directory"
+            git commit -m "Extract PROJECT_Birdwatching.zip contents to root"
             git push
           else
-            echo "No changes to commit"
+            echo "No changes to commit."
           fi
